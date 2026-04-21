@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 430" role="img" aria-label="furiganaのアーキテクチャ図">
+  <title>furiganaのアーキテクチャ: 辞書読み込みから形態素解析、読みの割り当て、4形式の出力まで</title>
+  <style>
+    .box { fill: #fdfdfe; stroke: #d6dce6; rx: 10; }
+    .zone { fill: #eceff4; stroke: #dde2ea; rx: 14; }
+    .t { font-family: 'Hiragino Sans','Noto Sans JP',system-ui,sans-serif; fill: #1f2430; }
+    .h { font-size: 13px; font-weight: 600; }
+    .s { font-size: 11px; fill: #657081; }
+    .zl { font-size: 11px; font-weight: 600; fill: #2a5ca8; letter-spacing: 1px; }
+    .arrow { stroke: #657081; stroke-width: 1.6; fill: none; marker-end: url(#head); }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #1d2128; stroke: #323845; }
+      .zone { fill: #181b21; stroke: #262b34; }
+      .t { fill: #e6e9ee; }
+      .s { fill: #97a1b0; }
+      .zl { fill: #7da7e8; }
+      .arrow { stroke: #97a1b0; }
+    }
+  </style>
+  <defs>
+    <marker id="head" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L7 4 L0 8 Z" fill="#657081"/>
+    </marker>
+  </defs>
+
+  <rect class="zone" x="20" y="20" width="360" height="92"/>
+  <text class="t zl" x="36" y="44">辞書(public/dict)</text>
+  <rect class="box" x="36" y="52" width="328" height="44"/>
+  <text class="t h" x="52" y="72">IPAdic 約17MB(.dat.gz 12ファイル)</text>
+  <text class="t s" x="52" y="88">npm依存のkuromojiから複製。初回のみfetchする</text>
+
+  <rect class="zone" x="400" y="20" width="360" height="92"/>
+  <text class="t zl" x="416" y="44">入力(main.ts)</text>
+  <rect class="box" x="416" y="52" width="328" height="44"/>
+  <text class="t h" x="432" y="72">本文テキスト(textarea)</text>
+  <text class="t s" x="432" y="88">localStorageに保存。250ミリ秒の待ち合わせ後に解析</text>
+
+  <path class="arrow" d="M200 112 V140"/>
+  <path class="arrow" d="M580 112 V140"/>
+
+  <rect class="zone" x="20" y="144" width="740" height="160"/>
+  <text class="t zl" x="36" y="168">解析(src/lib)</text>
+
+  <rect class="box" x="36" y="180" width="350" height="52"/>
+  <text class="t h" x="52" y="200">tokenizer.ts - kuromoji</text>
+  <text class="t s" x="52" y="216">行ごとに形態素へ分割し、表層形と読み(カタカナ)を得る</text>
+
+  <rect class="box" x="402" y="180" width="342" height="52"/>
+  <text class="t h" x="418" y="200">kana.ts</text>
+  <text class="t s" x="418" y="216">読みをひらがなへ正規化。漢字・かなの判定</text>
+
+  <path class="arrow" d="M211 232 V244"/>
+  <path class="arrow" d="M573 232 V244"/>
+
+  <rect class="box" x="36" y="248" width="708" height="48"/>
+  <text class="t h" x="52" y="268">align.ts / annotate.ts</text>
+  <text class="t s" x="52" y="284">かな部分を手がかりに読みを漢字の連へ割り当て、「読(よ)み込(こ)む」の形に分解する</text>
+
+  <path class="arrow" d="M390 304 V332"/>
+
+  <rect class="zone" x="20" y="336" width="740" height="74"/>
+  <text class="t zl" x="36" y="360">出力(4形式)</text>
+  <rect class="box" x="36" y="368" width="168" height="34"/>
+  <text class="t h" x="52" y="390">ルビ付きHTML</text>
+  <rect class="box" x="216" y="368" width="168" height="34"/>
+  <text class="t h" x="232" y="390">括弧書きテキスト</text>
+  <rect class="box" x="396" y="368" width="168" height="34"/>
+  <text class="t h" x="412" y="390">全かな文</text>
+  <rect class="box" x="576" y="368" width="168" height="34"/>
+  <text class="t h" x="592" y="390">分かち書き</text>
+</svg>
