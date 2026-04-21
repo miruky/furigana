@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# kuromojiから複製する辞書(ビルド時に生成)
+public/dict/
