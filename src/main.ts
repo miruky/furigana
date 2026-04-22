@@ -57,15 +57,19 @@ app.innerHTML = `
         <p class="tagline">漢字かな交じり文にふりがなを振る。解析は全部ブラウザの中で終わる</p>
       </div>
     </div>
-    <a class="repo-link" href="https://github.com/miruky/furigana" rel="noopener">GitHub</a>
+    <div class="header-actions">
+      <a class="repo-link" href="https://github.com/miruky/furigana" rel="noopener">GitHub</a>
+    </div>
   </header>
   <main class="layout">
     <section class="pane" aria-label="本文の入力">
+      <div class="loadbar" id="loadbar" aria-hidden="true"></div>
       <div class="toolbar">
-        <button type="button" id="btn-sample">サンプル文</button>
-        <button type="button" id="btn-clear">クリア</button>
+        <span class="pane-label">原文</span>
         <span class="spacer"></span>
         <span class="dict-state" id="dict-state" aria-live="polite"></span>
+        <button type="button" id="btn-sample">サンプル文</button>
+        <button type="button" id="btn-clear">クリア</button>
       </div>
       <textarea id="input" spellcheck="false" aria-label="ふりがなを振る文章"
         placeholder="ここに文章を貼り付けると、ふりがなが付きます。"></textarea>
@@ -93,6 +97,7 @@ const statsBar = mustFind<HTMLDivElement>('#stats');
 const btnSample = mustFind<HTMLButtonElement>('#btn-sample');
 const btnClear = mustFind<HTMLButtonElement>('#btn-clear');
 const btnCopy = mustFind<HTMLButtonElement>('#btn-copy');
+const loadbar = mustFind<HTMLDivElement>('#loadbar');
 
 let tokenizer: JaTokenizer | null = null;
 let format: Format = 'ruby';
@@ -156,9 +161,9 @@ function renderStats(): void {
     .reduce((a, t) => a + t.segments.filter((s) => s.ruby !== undefined).length, 0);
   const chars = textarea.value.replace(/\s/g, '').length;
   statsBar.innerHTML = [
-    `<span>${chars}字</span>`,
-    `<span>${tokenCount}語</span>`,
-    `<span>ルビ${rubyCount}箇所</span>`,
+    `<span><b>${chars}</b> 字</span>`,
+    `<span><b>${tokenCount}</b> 語</span>`,
+    `<span>ルビ <b>${rubyCount}</b> 箇所</span>`,
   ].join('');
 }
 
@@ -216,18 +221,21 @@ textarea.value = stored ?? SAMPLE_TEXT;
 
 renderTabs();
 renderStats();
-dictState.innerHTML = `<span class="spinner" aria-hidden="true"></span>辞書を読み込んでいる(初回のみ・約17MB)`;
-output.innerHTML = `<p class="placeholder">辞書を読み込んでいる。</p>`;
+loadbar.classList.add('on');
+dictState.textContent = '辞書を準備中…';
+output.innerHTML = `<p class="placeholder">辞書を読み込んでいる。初回だけIPAdic(約17MB)を取得する。</p>`;
 
 loadTokenizer(`${import.meta.env.BASE_URL}dict`)
   .then((t) => {
     tokenizer = t;
-    dictState.textContent = '辞書の準備ができた';
+    loadbar.classList.remove('on');
+    dictState.textContent = '準備完了';
     setTimeout(() => {
       dictState.textContent = '';
-    }, 2500);
+    }, 2200);
     analyzeNow();
   })
   .catch(() => {
+    loadbar.classList.remove('on');
     dictState.textContent = '辞書の読み込みに失敗した。再読み込みを試す';
   });
