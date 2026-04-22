@@ -10,6 +10,18 @@
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>furigana | ふりがな自動付与</title>
+    <script>
+      // 描画前にテーマを確定してちらつきを防ぐ。system のときは属性を付けず
+      // CSS の prefers-color-scheme に委ねる。
+      (() => {
+        try {
+          const t = localStorage.getItem('furigana:theme');
+          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        } catch (_) {
+          /* localStorage が使えなくても既定で動く */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
