@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { annotateTokens, toBracketText, toHiraganaText, toRubyHtml, toWakachi } from './annotate';
+import {
+  annotateTokens,
+  toBracketText,
+  toHiraganaText,
+  toRomajiText,
+  toRubyHtml,
+  toWakachi,
+} from './annotate';
 import type { TokenReading } from './annotate';
 
 const tokens: TokenReading[] = [
@@ -56,5 +63,18 @@ describe('出力形式', () => {
       { surface: 'タワー', reading: 'タワー' },
     ]);
     expect(toWakachi(withSpace)).toBe('東京 タワー');
+  });
+
+  it('ローマ字は語ごとに空白で区切る', () => {
+    expect(toRomajiText(annotated)).toBe('toukyou ni sumu panda');
+  });
+
+  it('ローマ字は記号を前の語に付ける', () => {
+    const withPunct = annotateTokens([
+      { surface: '猫', reading: 'ネコ' },
+      { surface: '。' },
+      { surface: '犬', reading: 'イヌ' },
+    ]);
+    expect(toRomajiText(withPunct)).toBe('neko。 inu');
   });
 });
