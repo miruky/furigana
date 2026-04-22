@@ -1,28 +1,32 @@
 :root {
-  --bg: #f3f5f8;
-  --surface: #fdfdfe;
-  --surface-2: #eceff4;
-  --ink: #1f2430;
-  --muted: #657081;
-  --line: #dde2ea;
-  --accent: #2a5ca8;
-  --accent-soft: rgba(42, 92, 168, 0.1);
-  --shadow: 0 1px 2px rgba(31, 36, 48, 0.05), 0 8px 24px rgba(31, 36, 48, 0.06);
-  --radius: 12px;
+  --paper: #f5f2ec;
+  --surface: #fbf9f4;
+  --surface-2: #efe9dd;
+  --ink: #24262b;
+  --muted: #6c6a64;
+  --line: #e3ddd0;
+  --line-soft: #ece6da;
+  --accent: #2f5aa6;
+  --accent-soft: rgba(47, 90, 166, 0.1);
+  --on-accent: #fbfaf6;
+  --radius: 10px;
+  --font-sans: 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
   --font-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14171d;
-    --surface: #1d2128;
-    --surface-2: #262b34;
-    --ink: #e6e9ee;
-    --muted: #97a1b0;
-    --line: #323845;
-    --accent: #7da7e8;
-    --accent-soft: rgba(125, 167, 232, 0.13);
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --paper: #16171b;
+    --surface: #1c1e23;
+    --surface-2: #24262d;
+    --ink: #e8e6e1;
+    --muted: #989aa2;
+    --line: #2c2f37;
+    --line-soft: #24262d;
+    --accent: #80a8e8;
+    --accent-soft: rgba(128, 168, 232, 0.14);
+    --on-accent: #15171b;
   }
 }
 
@@ -37,29 +41,34 @@ html {
 }
 
 body {
-  font-family: 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
-  background: var(--bg);
+  font-family: var(--font-sans);
+  background: var(--paper);
   color: var(--ink);
-  line-height: 1.7;
+  line-height: 1.75;
   min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 #app {
-  max-width: 1240px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 32px 24px 24px;
+  padding: clamp(20px, 4vw, 44px) clamp(16px, 4vw, 32px) 28px;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  gap: 24px;
+  gap: clamp(20px, 4vw, 36px);
 }
 
+/* ---- ヘッダー ---- */
 .site-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  animation: rise 0.5s ease both;
+  padding-bottom: clamp(12px, 2vw, 20px);
+  border-bottom: 1px solid var(--line);
+  animation: rise 0.55s var(--ease) both;
 }
 
 .brand {
@@ -69,106 +78,140 @@ body {
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   color: var(--ink);
   flex-shrink: 0;
 }
 
 .brand h1 {
   font-family: var(--font-serif);
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 30px);
   font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
 }
 
 .tagline {
   color: var(--muted);
   font-size: 13px;
-  margin-top: 4px;
+  margin-top: 5px;
+  max-width: 48ch;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .repo-link {
   color: var(--muted);
   text-decoration: none;
   font-size: 13px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 16px;
+  padding: 6px 4px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.15s ease;
+    color 0.2s var(--ease),
+    background-size 0.25s var(--ease);
 }
 
 .repo-link:hover {
   color: var(--accent);
-  border-color: var(--accent);
-  transform: translateY(-1px);
+  background-size: 100% 1px;
 }
 
+/* ---- 二面レイアウト ---- */
 .layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: clamp(16px, 3vw, 28px);
   flex: 1;
   align-items: stretch;
-  animation: rise 0.5s ease 0.08s both;
+  animation: rise 0.55s var(--ease) 0.07s both;
 }
 
 .pane {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-height: 480px;
+  position: relative;
+}
+
+.pane-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  text-transform: uppercase;
 }
 
 .toolbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 11px 16px;
   border-bottom: 1px solid var(--line);
   flex-wrap: wrap;
+  min-height: 50px;
 }
 
 .spacer {
   flex: 1;
 }
 
+/* ---- ボタン ---- */
 button {
   font: inherit;
   font-size: 13px;
   color: var(--ink);
-  background: var(--surface-2);
+  background: transparent;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 6px 14px;
+  border-radius: 7px;
+  padding: 6px 13px;
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.15s ease;
+    color 0.18s var(--ease),
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease);
 }
 
 button:hover {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  color: var(--accent);
 }
 
 button.primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 button.primary:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
+  color: var(--on-accent);
+}
+
+button.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+}
+
+button.icon svg {
+  width: 17px;
+  height: 17px;
 }
 
 :is(button, textarea, .output, .repo-link):focus-visible {
@@ -176,32 +219,34 @@ button.primary:hover {
   outline-offset: 2px;
 }
 
+/* ---- 出力形式タブ(下線方式) ---- */
 .tabs {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   flex-wrap: wrap;
 }
 
 .tab {
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
   color: var(--muted);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 12px;
+  border-radius: 0;
+  padding: 5px 10px;
+  font-size: 13px;
 }
 
 .tab:hover {
   color: var(--ink);
-  transform: none;
+  border-color: var(--line);
 }
 
 .tab.active {
-  background: var(--accent-soft);
-  border-color: var(--accent);
   color: var(--accent);
+  border-color: var(--accent);
 }
 
+/* ---- 入力 ---- */
 textarea {
   flex: 1;
   width: 100%;
@@ -209,10 +254,10 @@ textarea {
   resize: none;
   background: transparent;
   color: var(--ink);
-  font: inherit;
+  font-family: var(--font-sans);
   font-size: 15px;
-  line-height: 2;
-  padding: 16px 20px;
+  line-height: 2.05;
+  padding: 18px 22px;
   caret-color: var(--accent);
 }
 
@@ -221,6 +266,7 @@ textarea::placeholder {
   opacity: 0.7;
 }
 
+/* ---- 辞書読み込みの帯(スピナーを使わない不定プログレス) ---- */
 .dict-state {
   display: inline-flex;
   align-items: center;
@@ -229,49 +275,79 @@ textarea::placeholder {
   font-size: 12px;
 }
 
-.spinner {
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--line);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.loadbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  overflow: hidden;
+  background: var(--line-soft);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.loadbar.on {
+  opacity: 1;
 }
 
+.loadbar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: slide 1.25s var(--ease) infinite;
+}
+
+/* ---- ステータス ---- */
 .statusbar {
   display: flex;
-  gap: 16px;
-  padding: 10px 20px;
+  gap: 18px;
+  padding: 10px 22px;
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
+.statusbar b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---- 出力 ---- */
 .output {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  animation: fadein 0.25s ease both;
+  padding: 22px;
+}
+
+.output > * {
+  animation: fade 0.3s var(--ease) both;
 }
 
 .placeholder {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.9;
 }
 
-.ruby-text,
-.plain-text {
+.ruby-text {
+  font-family: var(--font-serif);
   white-space: pre-wrap;
   word-break: break-word;
-  font-size: 17px;
-  line-height: 2.6;
+  font-size: 19px;
+  line-height: 2.9;
+}
+
+.plain-text {
+  font-family: var(--font-serif);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 16px;
+  line-height: 2.2;
 }
 
 .ruby-text ruby {
@@ -279,56 +355,68 @@ textarea::placeholder {
 }
 
 .ruby-text rt {
-  font-size: 0.5em;
+  font-family: var(--font-sans);
+  font-size: 0.46em;
   color: var(--accent);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt';
 }
 
-.plain-text {
-  line-height: 2.1;
-  font-size: 15px;
-}
-
+/* ---- フッター ---- */
 .site-footer {
   color: var(--muted);
   font-size: 12px;
   text-align: center;
-  padding: 8px 0;
+  padding: 4px 0;
+  line-height: 1.8;
 }
 
+/* ---- モーション ---- */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
-
   to {
     opacity: 1;
     transform: none;
   }
 }
 
-@keyframes fadein {
+@keyframes fade {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
 }
 
-@media (max-width: 920px) {
+@keyframes slide {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(390%);
+  }
+}
+
+/* ---- レスポンシブ ---- */
+@media (max-width: 880px) {
   .layout {
     grid-template-columns: 1fr;
   }
 
   .pane {
-    min-height: 320px;
+    min-height: 300px;
   }
 
   textarea {
-    min-height: 40vh;
+    min-height: 38vh;
+  }
+
+  .tagline {
+    display: none;
   }
 }
 
@@ -338,5 +426,10 @@ textarea::placeholder {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .loadbar::after {
+    width: 100%;
+    opacity: 0.5;
   }
 }
