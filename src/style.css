@@ -1,4 +1,13 @@
 :root {
+  --radius: 10px;
+  --font-sans: 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
+  --font-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 既定(ライト)とユーザーが明示的にライトを選んだとき */
+:root,
+:root[data-theme='light'] {
   --paper: #f5f2ec;
   --surface: #fbf9f4;
   --surface-2: #efe9dd;
@@ -9,14 +18,25 @@
   --accent: #2f5aa6;
   --accent-soft: rgba(47, 90, 166, 0.1);
   --on-accent: #fbfaf6;
-  --radius: 10px;
-  --font-sans: 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
-  --font-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* 沈んだ地色に合わせて罫線とアクセントを起こしたダーク */
+:root[data-theme='dark'] {
+  --paper: #16171b;
+  --surface: #1c1e23;
+  --surface-2: #24262d;
+  --ink: #e8e6e1;
+  --muted: #989aa2;
+  --line: #2c2f37;
+  --line-soft: #24262d;
+  --accent: #80a8e8;
+  --accent-soft: rgba(128, 168, 232, 0.14);
+  --on-accent: #15171b;
+}
+
+/* OSがダークで、ユーザーが明示的にライトを選んでいないとき */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --paper: #16171b;
     --surface: #1c1e23;
     --surface-2: #24262d;
