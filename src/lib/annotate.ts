@@ -1,6 +1,7 @@
 import type { RubySegment } from './align';
 import { alignReading } from './align';
 import { hasKanji, katakanaToHiragana } from './kana';
+import { hiraganaToRomaji } from './romaji';
 
 /** 形態素解析器から受け取る最小限の情報。readingは未知語ではundefined */
 export interface TokenReading {
@@ -69,4 +70,17 @@ export function toWakachi(tokens: AnnotatedToken[]): string {
     .map((t) => t.surface)
     .filter((s) => s.trim() !== '')
     .join(' ');
+}
+
+/** ヘボン式ローマ字。語ごとに空白で区切り、記号は前の語に付ける */
+export function toRomajiText(tokens: AnnotatedToken[]): string {
+  let out = '';
+  for (const t of tokens) {
+    const kana = t.readingHira ?? t.surface;
+    if (kana.trim() === '') continue;
+    const romaji = hiraganaToRomaji(kana);
+    const punctuation = !/[a-z0-9]/i.test(romaji);
+    out += out === '' || punctuation ? romaji : ` ${romaji}`;
+  }
+  return out;
 }
