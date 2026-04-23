@@ -13,7 +13,7 @@
 
 furiganaは、貼り付けた日本語の文章を形態素解析し、漢字に読みを振るWebアプリである。解析器はkuromoji.js、辞書はIPAdicで、初回アクセス時に約17MBの辞書をブラウザが読み込んだあとは、入力のたびにその場で解析する。サーバーへの送信は一切ない。
 
-出力は4形式から選べる。ルビ表示はruby要素を使った組版で、そのままHTMLとしてコピーできる。括弧書きは「東京(とうきょう)」のようなテキストで、HTMLが使えないメールや原稿向け。かな文は漢字をすべて読みに開いた文、分かち書きは形態素境界を空白で示した文を出す。
+出力は5形式から選べる。ルビ表示はruby要素を使った組版で、リッチエディタにはルビごと、プレーンな入力欄には括弧書きとして貼り付けられる。括弧書きは「東京(とうきょう)」のようなテキストで、HTMLが使えないメールや原稿向け。かな文は漢字をすべて読みに開いた文、ローマ字は読みをヘボン式で語ごとに区切った文、分かち書きは形態素境界を空白で示した文を出す。結果はコピーのほか、ルビ表示は単体HTML・それ以外はテキストとして保存でき、表示はライト・ダーク・システムから選べる。
 
 読みの割り当てには作り込みがある。形態素の読みは「読み込む=ヨミコム」のように語全体にしか付かないため、そのままでは送り仮名の上にもルビがかかる。furiganaは表層のかな部分を手がかりに読みを照合し、「読(よ)み込(こ)む」と漢字の連にだけルビを割り当てる。「聞き取り=ききとり」のように同じかなが繰り返されても正しく区切れる。
 
@@ -31,8 +31,8 @@ furiganaは、貼り付けた日本語の文章を形態素解析し、漢字に
 | :------------------- | :---------------------------------- |
 | 言語                 | TypeScript 5(strict)                |
 | 形態素解析           | kuromoji.js + IPAdic                |
-| ビルド               | Vite 6                              |
-| テスト               | Vitest(実辞書での統合テスト込み)    |
+| ビルド               | Vite 7                              |
+| テスト               | Vitest 4(実辞書での統合テスト込み)  |
 | リンタ・フォーマッタ | ESLint(typescript-eslint)+ Prettier |
 | CI / 配信            | GitHub Actions / GitHub Pages       |
 
@@ -68,7 +68,7 @@ alignReading('お疲れ様', 'おつかれさま');
 ### 出力形式
 
 ```ts
-import { annotateTokens, toBracketText, toHiraganaText, toWakachi } from './src/lib';
+import { annotateTokens, toBracketText, toHiraganaText, toRomajiText, toWakachi } from './src/lib';
 
 const tokens = annotateTokens([
   { surface: '東京', reading: 'トウキョウ' },
@@ -77,16 +77,21 @@ const tokens = annotateTokens([
 ]);
 toBracketText(tokens); // => '東京（とうきょう）に住（す）む'(括弧は全角)
 toHiraganaText(tokens); // => 'とうきょうにすむ'
+toRomajiText(tokens); // => 'toukyou ni sumu'(ヘボン式・語ごとに空白)
 toWakachi(tokens); // => '東京 に 住む'
 ```
+
+`hiraganaToRomaji` を直接呼べば、かな文字列をヘボン式へ変換できる。促音は次の子音を重ね(`がっこう` → `gakkou`)、`ち`系の前は `t` を置き(`まっちゃ` → `matcha`)、撥音は母音・や行の前で `n'` と切る(`しんよう` → `shin'you`)。
 
 ## プロジェクト構成
 
 - `src/lib/kana.ts` カタカナとひらがなの変換、漢字判定
+- `src/lib/romaji.ts` かなをヘボン式ローマ字へ写す
 - `src/lib/align.ts` 読みを漢字の連へ割り当てるルビ整列
-- `src/lib/annotate.ts` トークン列への注釈と4形式の出力
+- `src/lib/annotate.ts` トークン列への注釈と5形式の出力
 - `src/lib/tokenizer.ts` kuromojiの読み込みと行単位の解析
-- `src/main.ts` 入力・出力タブ・コピーのUI
+- `src/theme.ts` ライト・ダーク・システムのテーマ選好
+- `src/main.ts` 入力・出力タブ・保存・コピー・テーマ切替のUI
 - `scripts/copy-dict.mjs` npm依存の辞書をpublic/dictへ複製
 - `docs/` アーキテクチャ図
 
